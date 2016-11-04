@@ -33,7 +33,7 @@ int main(){
 	//testing const graph
 	std::cout << "\n\n\nConst graph" <<std::endl;
 	const Graph gConst(4,true);
-	gConst.printGraph();
+	std::cout << gConst;//gConst.printGraph();
 
 	return EXIT_SUCCESS;
 }

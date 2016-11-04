@@ -23,14 +23,15 @@ struct GraphNotConnected: public std::exception{
 };
 
 
+
 //bit shift operator overload instead of printGraph() method
 std::ostream& operator<<(std::ostream& os, const Graph& g)
 {
     //here I have to iterate keys - because user can add vertex with random ID
-	for(std::map<int,std::list<std::pair<int,int>>>::const_iterator iter = g.adjacencyList.begin(); iter != g.adjacencyList.end(); ++iter){		
+	for(auto iter = g.adjacencyList.cbegin(); iter != g.adjacencyList.cend(); ++iter){		
 		os << "Vertice " << iter->first << ":" << std::endl;
 		//iterate list of pairs representing edges to other vertices
-		for(auto& onePair : g.adjacencyList.at(iter->first)){
+		for(const auto& onePair : g.adjacencyList.at(iter->first)){
 			os << "\t" << onePair.first << "-" << onePair.second << std::endl;
 		}
 		os << std::endl;
@@ -115,7 +116,7 @@ Graph::~Graph()
 
 void Graph::printGraph(){
 	//here I have to iterate keys - because user can add some out of pattern id 
-	for(std::map<int,std::list<std::pair<int,int>>>::iterator iter = adjacencyList.begin(); iter != adjacencyList.end(); ++iter){		
+	for(auto iter = adjacencyList.begin(); iter != adjacencyList.end(); ++iter){		
 		std::cout << "Vertice " << iter->first << ":" << std::endl;
 		//iterate list of pairs representing edges to other vertices
 		for(auto& onePair : adjacencyList.at(iter->first)){
@@ -128,7 +129,7 @@ void Graph::printGraph(){
 void Graph::printGraph() const{
 	std::cout << "This Graph is const\n";
 	//here I have to iterate keys - because user can add some out of pattern id 
-	for(std::map<int,std::list<std::pair<int,int>>>::const_iterator iter = adjacencyList.begin(); iter != adjacencyList.end(); ++iter){		
+	for(auto iter = adjacencyList.begin(); iter != adjacencyList.end(); ++iter){		
 		std::cout << "Vertice " << iter->first << ":" << std::endl;
 		//iterate list of pairs representing edges to other vertices
 		for(auto& onePair : adjacencyList.at(iter->first)){
@@ -144,14 +145,11 @@ std::vector<Edge>& Graph::getEdges(){
 }
 
 
-bool Graph::vertexExists(int node){
-	if(vertices.find(node) != vertices.end()){
-		return true;
-	}
-	return false;
+bool Graph::vertexExists(int node) const{
+	return vertices.find(node) != vertices.end();
 }
 
-bool Graph::edgeExists(int firstVertex,int secondVertex){
+bool Graph::edgeExists(int firstVertex,int secondVertex) const{
 	for(auto& pair : adjacencyList.at(firstVertex)){
 		if(pair.first == secondVertex)
 			return true;
@@ -174,7 +172,6 @@ void Graph::addVertex(int id){
 		std::cerr << e.what() << " - id: " <<  id << std::endl;
 	}
 }
-
 
 
 std::map<int,Vertex>& Graph::getVertices(){
@@ -201,7 +198,7 @@ void Graph::addEdge(int firstVertex, int secondVertex, int dist){
 	}
 }
 
-bool Graph::isConnected(){
+bool Graph::isConnected() const{
 	//BFS implementation
 	std::queue<int> Q;	
 	//set is more effective then vector in looking up if contains an element
@@ -229,13 +226,11 @@ bool Graph::isConnected(){
 		}
 	}
 
-	if(visited.size() == adjacencyList.size())
-		return true;
-	else
-		return false;
+	//return if all vertexes have been visited
+	return visited.size() == adjacencyList.size();
 }
 
-void Graph::search(int firstVertex,int secondVertex){
+void Graph::search(int firstVertex,int secondVertex) const{
 	//throws exception if the graph is not connected
 	if(!this->isConnected())
 		throw GraphNotConnected();

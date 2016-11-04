@@ -13,18 +13,18 @@ class Graph{
 	public:
 		Graph();
 		Graph(unsigned n, bool isConnected);
-		virtual ~Graph();
+		virtual ~Graph() noexcept;
 		void printGraph();
 		void printGraph() const;
-		bool vertexExists(int node);			//existNode
-		bool edgeExists(int firstVertex,int secondVertex);
+		bool vertexExists(int node) const;			//existNode
+		bool edgeExists(int firstVertex,int secondVertex) const;
 		void addVertex(int id);
 		std::map<int,Vertex>& getVertices();
 		Vertex& getVertexById(int id);
 		std::vector<Edge>& getEdges();
 		void addEdge(int firstVertex, int secondVertex, int dist);
-		bool isConnected();
-		void search(int firstVertex, int secondVertex);
+		bool isConnected() const;
+		void search(int firstVertex, int secondVertex) const;
 		friend std::ostream& operator<<(std::ostream& os, const Graph& g);		//needs to be friend cuz it's defined outside of class and needs to access ajacencyList
 	protected:
 	private:
